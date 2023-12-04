@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JFrame;
 
@@ -61,11 +62,19 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         gl.glPopMatrix();
 
         // Cubes tirés
-        for (Cube cube : shotCubes) {
+        Iterator<Cube> iterator = shotCubes.iterator();
+        while (iterator.hasNext()) {
+            Cube cube = iterator.next();
             cube.translate(0, 0.005f, 0);
-            gl.glPushMatrix();
-            cube.display(gl);
-            gl.glPopMatrix();
+
+            if (cube.getY() > 7) {
+                // Suppression du cube une fois sorti de l'écran
+                iterator.remove();
+            } else {
+                gl.glPushMatrix();
+                cube.display(gl);
+                gl.glPopMatrix();
+            }
         }
     }
 
