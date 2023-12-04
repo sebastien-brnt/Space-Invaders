@@ -55,5 +55,15 @@ public abstract class GraphicalObject
         this.posZ += pZ;
     }
 
+    public float getX() {
+        return posX;
+    }
 
+    public float getY() {
+        return posY;
+    }
+
+    public float getZ() {
+        return posZ;
+    }
 }

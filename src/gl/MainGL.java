@@ -19,7 +19,9 @@ import gl.graphicObjects.GraphicalObject;
 public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 {
     private ArrayList<GraphicalObject> objects3D;
+    private ArrayList<Cube> shotCubes;
     private float angle;
+
 
     private Cube player;
 
@@ -39,6 +41,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     public MainGL() {
         this.addGLEventListener(this);
         this.objects3D = new ArrayList<GraphicalObject>();
+        this.shotCubes = new ArrayList<Cube>();
         this.angle = 0.0f;
 
         this.addKeyListener(this);
@@ -52,11 +55,18 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
         gl.glLoadIdentity();
 
-        // TODO : Draw objects
         gl.glPushMatrix();
         gl.glTranslatef(0.0f, -4.0f, -15.0f);
         this.player.display(gl);
         gl.glPopMatrix();
+
+        // Cubes tirés
+        for (Cube cube : shotCubes) {
+            cube.translate(0, 0.005f, 0);
+            gl.glPushMatrix();
+            cube.display(gl);
+            gl.glPopMatrix();
+        }
     }
 
     @Override
@@ -105,7 +115,12 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             case KeyEvent.VK_RIGHT: // Flèche de droite
                 this.player.translate(+2, 0, 0);
                 break;
+            case KeyEvent.VK_SPACE: // Barre d'espace
+                Cube shotCube = new Cube(player.getX(), -4, -15, 0, 0, 0, 0.2f, 255, 1, 1);
+                this.shotCubes.add(shotCube);
+                break;
         }
+        this.repaint();
     }
 
     @Override
