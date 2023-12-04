@@ -110,13 +110,17 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT: // Flèche de gauche
-                this.player.translate(-2, 0, 0);
+                if ( player.getX() > -6 ) {
+                    this.player.translate(-1, 0, 0);
+                }
                 break;
             case KeyEvent.VK_RIGHT: // Flèche de droite
-                this.player.translate(+2, 0, 0);
+                if ( player.getX() < 6 ) {
+                    this.player.translate(+1, 0, 0);
+                }
                 break;
             case KeyEvent.VK_SPACE: // Barre d'espace
-                Cube shotCube = new Cube(player.getX(), -4, -15, 0, 0, 0, 0.2f, 255, 1, 1);
+                Cube shotCube = new Cube(player.getX(), -4, -15, 0, 0, 0, 0.2f, 1, 1, 1);
                 this.shotCubes.add(shotCube);
                 break;
         }

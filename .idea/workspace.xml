@@ -7,7 +7,6 @@
     <list default="true" id="4591ed4f-0dd4-4feb-9e84-24765d0a9fa2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gl/MainGL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gl/MainGL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gl/graphicObjects/GraphicalObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gl/graphicObjects/GraphicalObject.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +68,7 @@
       <option name="presentableId" value="Default" />
       <updated>1701706494049</updated>
       <workItem from="1701706495077" duration="6000" />
-      <workItem from="1701706691353" duration="3593000" />
+      <workItem from="1701706691353" duration="3902000" />
     </task>
     <servers />
   </component>
