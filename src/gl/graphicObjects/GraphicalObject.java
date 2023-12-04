@@ -36,7 +36,7 @@ public abstract class GraphicalObject
         gl.glRotatef(this.angY, 0.0f, 1.0f, 0.0f);
         gl.glRotatef(this.angZ, 0.0f, 0.0f, 1.0f);
         gl.glScalef(this.scale, this.scale, this.scale);
-        gl.glColor3f(this.r, this.g, this.g);
+        gl.glColor3f(this.r, this.g, this.b);
         this.display_normalized(gl);
         gl.glPopMatrix();
     }
@@ -65,5 +65,22 @@ public abstract class GraphicalObject
 
     public float getZ() {
         return posZ;
+    }
+
+    // Méthode pour vérifier si ce cube intersecte avec un autre cube
+    public boolean intersects(GraphicalObject other) {
+        float baseSize = 1.0f; // Taille de base pour un objet non échelonné
+
+        // Calculez la demi-taille pour chaque objet
+        float halfSizeThis = baseSize * this.scale / 2.0f;
+        float halfSizeOther = baseSize * other.scale / 2.0f;
+
+        // Vérifier la collision sur chaque axe
+        boolean collisionX = Math.abs(this.posX - other.posX) < (halfSizeThis + halfSizeOther);
+        boolean collisionY = Math.abs(this.posY - other.posY) < (halfSizeThis + halfSizeOther);
+        boolean collisionZ = Math.abs(this.posZ - other.posZ) < (halfSizeThis + halfSizeOther);
+
+        // Si les trois collisions sont vraies, alors il y a une intersection
+        return collisionX && collisionY && collisionZ;
     }
 }
