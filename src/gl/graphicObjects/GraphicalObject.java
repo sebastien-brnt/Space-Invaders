@@ -50,9 +50,9 @@ public abstract class GraphicalObject
 
     public void translate(float pX,float pY,float pZ)
     {
-        this.angX += pX;
-        this.angY += pY;
-        this.angZ += pZ;
+        this.posX += pX;
+        this.posY += pY;
+        this.posZ += pZ;
     }
 
 
