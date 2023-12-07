@@ -26,11 +26,14 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     private ArrayList<Cube> targets;
     private float angle;
     private float level;
-
     private boolean isPaused = false;
-
-
     private Player player;
+
+    // Variables pour le delais entre les tirs
+    private long lastShotTime = 0;
+    private final long SHOT_DELAY = 150;
+
+
 
     public static void main(String[] args)
     {
@@ -229,8 +232,17 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 }
                 break;
             case KeyEvent.VK_SPACE: // Barre d'espace
-                Missile shotCube = new Missile(player.getX(), -4, -15, 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 1, 1);
-                this.missiles.add(shotCube);
+                long currentTime = System.currentTimeMillis();
+
+                // Si le délais est respecté
+                if (currentTime - lastShotTime >= SHOT_DELAY) {
+                    // Création et ajout du missile
+                    Missile shotCube = new Missile(player.getX(), -4, -15, 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 1, 1);
+                    this.missiles.add(shotCube);
+
+                    // Mise à jour du temps du dernier tir
+                    lastShotTime = currentTime;
+                }
                 break;
             case KeyEvent.VK_ESCAPE: // Touche Échappe
                 isPaused = true;
