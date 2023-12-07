@@ -67,6 +67,18 @@ public abstract class GraphicalObject
         return posZ;
     }
 
+    public void setX(float posX) {
+        this.posX = posX;
+    }
+
+    public void setY(float posY) {
+        this.posY = posY;
+    }
+
+    public void setZ(float posZ) {
+        this.posZ = posZ;
+    }
+
     // Méthode pour vérifier si ce cube intersecte avec un autre cube
     public boolean intersects(GraphicalObject other) {
         float baseSize = 1.0f; // Taille de base pour un objet non échelonné

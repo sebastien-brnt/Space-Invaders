@@ -6,16 +6,16 @@ public class Missile extends GraphicalObject {
 
     private float width;
     private float height;
-    private float depth; // Ajout de la profondeur
+    private float depth;
 
     public Missile(float pX, float pY, float pZ,
                        float angX, float angY, float angZ,
-                       float width, float height, float depth, // Ajout du paramètre depth
+                       float width, float height, float depth,
                        float r, float g, float b) {
         super(pX, pY, pZ, angX, angY, angZ, 1.0f, r, g, b);
         this.width = width;
         this.height = height;
-        this.depth = depth; // Initialisation de la profondeur
+        this.depth = depth;
     }
 
     public void display_normalized(GL2 gl) {

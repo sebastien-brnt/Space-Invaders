@@ -68,7 +68,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     @Override
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
 
         gl.glPushMatrix();
@@ -76,20 +76,48 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.player.display(gl);
         gl.glPopMatrix();
 
-        // Cibles
-        if (targets.size() == 0) {
-            // Si toutes les cibles ont été détruites on réinitialise le jeu
+        // Vérification du X des cibles
+        boolean shouldMoveDown = targets.stream().anyMatch(target -> target.getX() < -7.5f || target.getX() > 7.5f);
+
+        // Vitesse de déplacement des cibles
+        float vitesse = level / 3000;
+        boolean restartGame = false;
+
+        if (targets.isEmpty()) {
+            // Ajout d'un niveau et initialisation des cibles
             this.level += 1;
             this.initTargets();
         } else {
-            for (Cube target : targets) {
-                if (target.getY() < -4) {
-                    // Si une cible est passée sous le joueur on arrête le jeu
-                    System.exit(0);
+            for (Cube target : new ArrayList<>(targets)) {
+                if (target.getY() < -3) {
+                    int response = JOptionPane.showConfirmDialog(null, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
+                    if (response == JOptionPane.YES_OPTION) {
+                        // Redémarrage du jeu
+                        restartGame = true;
+                        break;
+                    } else {
+                        // Fermeture du jeu
+                        System.exit(0);
+                    }
                 } else {
                     if (!isPaused) {
-                        float vitesse = level / 10000;
-                        target.translate(0, -vitesse, 0);
+                        // Switch de droite à gauche suivant la valeur de Y
+                        if (target.getY() % 1 == 0) {
+                            target.translate(vitesse, 0, 0);
+                        } else {
+                            target.translate(-vitesse, 0, 0);
+                        }
+                    }
+
+                    if (shouldMoveDown) {
+                        // Replacement des cibles à -7,5 ou 7,5
+                        if (target.getX() < -7.5f) {
+                            target.setX(-7.5f);
+                        } else if (target.getX() > 7.5f) {
+                            target.setX(7.5f);
+                        }
+                        // Descente des cibles
+                        target.translate(0, -0.5f, 0);
                     }
 
                     gl.glPushMatrix();
@@ -99,21 +127,16 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             }
         }
 
-
-        // Cubes tirés
         Iterator<Missile> shotIterator = missiles.iterator();
         while (shotIterator.hasNext()) {
             Missile shot = shotIterator.next();
             shot.translate(0, 0.005f, 0);
             boolean hit = false;
 
-            // Vérification des collisions avec les cibles
             Iterator<Cube> targetIterator = targets.iterator();
             while (targetIterator.hasNext()) {
                 Cube target = targetIterator.next();
-                // Vérification de la collision
                 if (shot.intersects(target)) {
-                    // Suppression de la cible
                     targetIterator.remove();
                     hit = true;
                     break;
@@ -121,7 +144,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             }
 
             if (hit || shot.getY() > 7) {
-                // Suppression du missile s'il a touché ou s'il est sorti de l'écran
+                // Suppression du missile
                 shotIterator.remove();
             } else {
                 gl.glPushMatrix();
@@ -129,7 +152,20 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 gl.glPopMatrix();
             }
         }
+
+        // Redémarrage du jeu
+        if (restartGame) {
+            restartGame();
+        }
     }
+
+    private void restartGame() {
+        // Remise à zero des cibles, du joueur et du niveau
+        this.player.setX(0);
+        this.targets.clear();
+        this.level = 0;
+    }
+
 
     @Override
     public void dispose(GLAutoDrawable arg0) {
@@ -151,8 +187,8 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     }
 
     public void initTargets() {
-        float[] positionsX = {-6, -4, -2, 0, 2, 4, 6}; // Positions X pour les cibles
-        float[] positionsY = {0, 2, 4}; // Positions Y pour les cibles
+        float[] positionsX = {-6, -4.5f, -3, -1.5f, 0, 1.5f,  3, 4.5f, 6}; // Positions X pour les cibles
+        float[] positionsY = {0, 1, 2, 3,  4}; // Positions Y pour les cibles
 
         for (float posY : positionsY) {
             for (float posX : positionsX) {
@@ -183,12 +219,12 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT: // Flèche de gauche
-                if ( player.getX() > -6 ) {
+                if ( player.getX() > -7) {
                     this.player.translate(-1, 0, 0);
                 }
                 break;
             case KeyEvent.VK_RIGHT: // Flèche de droite
-                if ( player.getX() < 6 ) {
+                if ( player.getX() < 7 ) {
                     this.player.translate(+1, 0, 0);
                 }
                 break;
