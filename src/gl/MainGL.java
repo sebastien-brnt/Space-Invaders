@@ -156,7 +156,9 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         Iterator<Missile> shotIterator = missiles.iterator();
         while (shotIterator.hasNext()) {
             Missile shot = shotIterator.next();
-            shot.translate(0, 0.005f, 0);
+            if (!isPaused) {
+                shot.translate(0, 0.005f, 0);
+            }
             boolean hit = false;
 
             Iterator<Cube> targetIterator = targets.iterator();
@@ -182,7 +184,9 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         Iterator<Missile> shotIteratorEnemy = missilesEnemy.iterator();
         while (shotIteratorEnemy.hasNext()) {
             Missile shot = shotIteratorEnemy.next();
-            shot.translate(0, -0.0035f, 0);
+            if (!isPaused) {
+                shot.translate(0, -0.0035f, 0);
+            }
             boolean hit = false;
 
             if (shot.intersects(this.player) && shot.getY() > this.player.getY()) {
