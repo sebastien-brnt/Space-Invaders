@@ -81,13 +81,13 @@ public abstract class GraphicalObject
 
     // Méthode pour vérifier si ce cube intersecte avec un autre cube
     public boolean intersects(GraphicalObject other) {
-        float baseSize = 1.0f; // Taille de base pour un objet non échelonné
+        float baseSize = 1.0f;
 
-        // Calculez la demi-taille pour chaque objet
+        // Calcul de la demi-taille pour chaque objet
         float halfSizeThis = baseSize * this.scale / 2.0f;
         float halfSizeOther = baseSize * other.scale / 2.0f;
 
-        // Vérifier la collision sur chaque axe
+        // Vérifie la collision sur chaque axe
         boolean collisionX = Math.abs(this.posX - other.posX) < (halfSizeThis + halfSizeOther);
         boolean collisionY = Math.abs(this.posY - other.posY) < (halfSizeThis + halfSizeOther);
         boolean collisionZ = Math.abs(this.posZ - other.posZ) < (halfSizeThis + halfSizeOther);

@@ -23,6 +23,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 {
     private ArrayList<GraphicalObject> objects3D;
     private ArrayList<Missile> missiles;
+    private ArrayList<Missile> missilesEnemy;
     private ArrayList<Cube> targets;
     private float angle;
     private float level;
@@ -30,9 +31,9 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     private Player player;
 
     // Variables pour le delais entre les tirs
-    private long lastShotTime = 0;
+    private long lastShotTime, lastShotTimeEnemy = 0;
     private final long SHOT_DELAY = 150;
-
+    private final long SHOT_DELAY_ENEMY = 3000;
 
 
     public static void main(String[] args)
@@ -54,6 +55,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.addGLEventListener(this);
         this.objects3D = new ArrayList<GraphicalObject>();
         this.missiles = new ArrayList<Missile>();
+        this.missilesEnemy = new ArrayList<Missile>();
 
         // Création des cibles
         this.targets = new ArrayList<Cube>();
@@ -114,6 +116,23 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                         } else {
                             target.translate(-vitesse, 0, 0);
                         }
+
+                        // Tir aléatoire des cibles
+                        int result = (int) (Math.random() * 10000);
+
+                        if (result == 0) {
+                            long currentTime = System.currentTimeMillis();
+
+                            // Tir de l'ennemi
+                            if (currentTime - lastShotTimeEnemy >= SHOT_DELAY_ENEMY) {
+                                // Création et ajout du missile
+                                Missile shotCube = new Missile(target.getX(), target.getY(), target.getZ(), 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 0, 0);
+                                this.missilesEnemy.add(shotCube);
+
+                                // Mise à jour du temps du dernier tir
+                                lastShotTimeEnemy = currentTime;
+                            }
+                        }
                     }
 
                     if (shouldMoveDown) {
@@ -160,6 +179,35 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             }
         }
 
+        Iterator<Missile> shotIteratorEnemy = missilesEnemy.iterator();
+        while (shotIteratorEnemy.hasNext()) {
+            Missile shot = shotIteratorEnemy.next();
+            shot.translate(0, -0.0035f, 0);
+            boolean hit = false;
+
+            if (shot.intersects(this.player) && shot.getY() > this.player.getY()) {
+                int response = JOptionPane.showConfirmDialog(null, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
+                if (response == JOptionPane.YES_OPTION) {
+                    // Redémarrage du jeu
+                    restartGame = true;
+                    break;
+                } else {
+                    // Fermeture du jeu
+                    System.exit(0);
+                }
+                break;
+            }
+
+            if (hit || shot.getY() > 7) {
+                // Suppression du missile
+                shotIterator.remove();
+            } else {
+                gl.glPushMatrix();
+                shot.display(gl);
+                gl.glPopMatrix();
+            }
+        }
+
         // Redémarrage du jeu
         if (restartGame) {
             restartGame();
@@ -170,6 +218,8 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         // Remise à zero des cibles, du joueur et du niveau
         this.player.setX(0);
         this.targets.clear();
+        this.missiles.clear();
+        this.missilesEnemy.clear();
         this.level = 0;
     }
 
@@ -241,7 +291,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 // Si le délais est respecté
                 if (currentTime - lastShotTime >= SHOT_DELAY) {
                     // Création et ajout du missile
-                    Missile shotCube = new Missile(player.getX(), player.getY(), -15, 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 1, 1);
+                    Missile shotCube = new Missile(player.getX(), player.getY(), player.getZ(), 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 1, 1);
                     this.missiles.add(shotCube);
 
                     // Mise à jour du temps du dernier tir
