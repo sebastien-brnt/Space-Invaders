@@ -75,24 +75,28 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         gl.glLoadIdentity();
 
         gl.glPushMatrix();
-        gl.glTranslatef(0.0f, -4.0f, -15.0f);
         this.player.display(gl);
+        this.player.setY(-4);
+        this.player.setZ(-15);
         gl.glPopMatrix();
 
         // Vérification du X des cibles
         boolean shouldMoveDown = targets.stream().anyMatch(target -> target.getX() < -7.5f || target.getX() > 7.5f);
 
         // Vitesse de déplacement des cibles
-        float vitesse = level / 3000;
+        float vitesse = level / 2500;
         boolean restartGame = false;
 
         if (targets.isEmpty()) {
             // Ajout d'un niveau et initialisation des cibles
             this.level += 1;
             this.initTargets();
+            if(this.level > 1) {
+                JOptionPane.showMessageDialog(null, "Félécitation, vous passez au niveau " + (int) this.level + "!", "Niveau " + (int) this.level, JOptionPane.INFORMATION_MESSAGE);
+            }
         } else {
             for (Cube target : new ArrayList<>(targets)) {
-                if (target.getY() < -3) {
+                if (target.getY() < this.player.getY() + 1) {
                     int response = JOptionPane.showConfirmDialog(null, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
                     if (response == JOptionPane.YES_OPTION) {
                         // Redémarrage du jeu
@@ -237,14 +241,14 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 // Si le délais est respecté
                 if (currentTime - lastShotTime >= SHOT_DELAY) {
                     // Création et ajout du missile
-                    Missile shotCube = new Missile(player.getX(), -4, -15, 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 1, 1);
+                    Missile shotCube = new Missile(player.getX(), player.getY(), -15, 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 1, 1);
                     this.missiles.add(shotCube);
 
                     // Mise à jour du temps du dernier tir
                     lastShotTime = currentTime;
                 }
                 break;
-            case KeyEvent.VK_ESCAPE: // Touche Échappe
+            case KeyEvent.VK_ESCAPE: // Touche Échap
                 isPaused = true;
                 int response = JOptionPane.showConfirmDialog(null, "Voulez-vous vraiment quitter le jeu ?", "Quitter le jeu", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.YES_OPTION) {
