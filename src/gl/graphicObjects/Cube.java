@@ -16,17 +16,17 @@ public class Cube extends GraphicalObject {
         faces = new ArrayList<Square>();
 
         // Front face
-        faces.add(new Square(0, 0, 1, 0, 0, 0, 1, 0.8f, 0.2f, 0.2f));
+        faces.add(new Square(0, 0, 1, 0, 0, 0, 1, 0.12f, 0.25f, 0.69f));
         // Back face
-        faces.add(new Square(0, 0, -1, 0, 0, 0, 1, 0.2f, 0.4f, 0.6f));
+        faces.add(new Square(0, 0, -1, 0, 0, 0, 1, 0.32f, 0.39f, 0.6f));
         // Right face
-        faces.add(new Square(1, 0, 0, 0, 90, 0, 1, 0.1f, 0.8f, 0.2f));
+        faces.add(new Square(1, 0, 0, 0, 90, 0, 1, 0.05f, 0.16f, 0.53f));
         // Left face
-        faces.add(new Square(-1, 0, 0, 0, -90, 0, 1, 0.6f, 0.5f, 0.2f));
+        faces.add(new Square(-1, 0, 0, 0, -90, 0, 1, 0.41f, 0.47f, 0.69f));
         // Top face
-        faces.add(new Square(0, 1, 0, 90, 0, 0, 1, 0.3f, 0.2f, 0.8f));
+        faces.add(new Square(0, 1, 0, 90, 0, 0, 1, 0.14f, 0.2f, 0.43f));
         // Left face
-        faces.add(new Square(0, -1, 0, 90, 0, 0, 1, 0.3f, 0.8f, 0.7f));
+        faces.add(new Square(0, -1, 0, 90, 0, 0, 1, 0.57f, 0.63f, 0.83f));
     }
 
     public void display_normalized(GL2 gl) {

@@ -186,7 +186,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         while (shotIteratorEnemy.hasNext()) {
             Missile shot = shotIteratorEnemy.next();
             if (!isPaused) {
-                shot.translate(0, -0.0035f, 0);
+                shot.translate(0, -0.0025f, 0);
             }
             boolean hit = false;
 
