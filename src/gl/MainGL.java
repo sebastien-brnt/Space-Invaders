@@ -80,6 +80,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.player.display(gl);
         this.player.setY(-4);
         this.player.setZ(-15);
+        this.player.rotate(0, 0.025f, 0);
         gl.glPopMatrix();
 
         // Vérification du X des cibles
@@ -243,11 +244,14 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         gl.glDepthFunc(GL2.GL_LEQUAL);
         gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
-        // TODO : Initialize all graphical objects
-        this.player = new Player(0, 0, 0, 0, 0, 0, 0.6f, 1, 1, 1);
+        this.player = new Player(0, 0, 0, 0, 0, 0, 1, 1, 1, 1f, 1, 1, 1);
     }
 
     public void initTargets() {
+        this.targets.clear();
+        this.missiles.clear();
+        this.missilesEnemy.clear();
+
         float[] positionsX = {-6, -4.5f, -3, -1.5f, 0, 1.5f,  3, 4.5f, 6}; // Positions X pour les cibles
         float[] positionsY = {0, 1, 2, 3,  4}; // Positions Y pour les cibles
 
@@ -295,7 +299,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 // Si le délais est respecté
                 if (currentTime - lastShotTime >= SHOT_DELAY) {
                     // Création et ajout du missile
-                    Missile shotCube = new Missile(player.getX(), player.getY(), player.getZ(), 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 1, 1);
+                    Missile shotCube = new Missile(player.getX(), player.getY() + .3f, player.getZ(), 0, 0, 0, 0.2f, 0.7f, 0.2f, 1, 1, 1);
                     this.missiles.add(shotCube);
 
                     // Mise à jour du temps du dernier tir
