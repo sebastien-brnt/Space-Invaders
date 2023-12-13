@@ -35,6 +35,8 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     private final long SHOT_DELAY = 150;
     private final long SHOT_DELAY_ENEMY = 3000;
 
+    private JFrame frame;
+
 
     public static void main(String[] args)
     {
@@ -48,6 +50,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         Animator animator = new Animator(canvas);
         animator.start();
 
+        ((MainGL) canvas).setFrame(frame);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -95,12 +98,12 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             this.level += 1;
             this.initTargets();
             if(this.level > 1) {
-                JOptionPane.showMessageDialog(null, "Félécitation, vous passez au niveau " + (int) this.level + "!", "Niveau " + (int) this.level, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Félécitation, vous passez au niveau " + (int) this.level + "!", "Niveau " + (int) this.level, JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
             for (Cube target : new ArrayList<>(targets)) {
                 if (target.getY() < this.player.getY() + 1) {
-                    int response = JOptionPane.showConfirmDialog(null, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
+                    int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
                     if (response == JOptionPane.YES_OPTION) {
                         // Redémarrage du jeu
                         restartGame = true;
@@ -191,7 +194,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             boolean hit = false;
 
             if (shot.intersects(this.player) && shot.getY() > this.player.getY()) {
-                int response = JOptionPane.showConfirmDialog(null, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
+                int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.YES_OPTION) {
                     // Redémarrage du jeu
                     restartGame = true;
@@ -308,7 +311,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 break;
             case KeyEvent.VK_ESCAPE: // Touche Échap
                 isPaused = true;
-                int response = JOptionPane.showConfirmDialog(null, "Voulez-vous vraiment quitter le jeu ?", "Quitter le jeu", JOptionPane.YES_NO_OPTION);
+                int response = JOptionPane.showConfirmDialog(frame, "Voulez-vous vraiment quitter le jeu ?", "Quitter le jeu", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 } else {
@@ -327,5 +330,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     public void keyTyped(KeyEvent e) {
     }
 
-
+    public void setFrame(JFrame frame) {
+        this.frame = frame;
+    }
 }
