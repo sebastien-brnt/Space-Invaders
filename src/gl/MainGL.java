@@ -1,6 +1,6 @@
 package gl;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -21,14 +21,19 @@ import gl.graphicObjects.Player;
 
 public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 {
-    private ArrayList<GraphicalObject> objects3D;
+    // Statut du jeu
+    private boolean isPaused = false;
+
+    // Joueur
+    private Player player;
+    private int life;
+
+    private float level;
+
+    // Cibles et missiles
+    private ArrayList<Cube> targets;
     private ArrayList<Missile> missiles;
     private ArrayList<Missile> missilesEnemy;
-    private ArrayList<Cube> targets;
-    private float angle;
-    private float level;
-    private boolean isPaused = false;
-    private Player player;
 
     // Variables pour le delais entre les tirs
     private long lastShotTime, lastShotTimeEnemy = 0;
@@ -40,9 +45,9 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 
     public static void main(String[] args)
     {
+        final JFrame frame = new JFrame();
         GLCanvas canvas = new MainGL();
         canvas.setPreferredSize(new Dimension(800, 600));
-        final JFrame frame = new JFrame();
         frame.getContentPane().add(canvas);
         frame.setTitle("Space Invaders");
         frame.pack();
@@ -56,17 +61,15 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 
     public MainGL() {
         this.addGLEventListener(this);
-        this.objects3D = new ArrayList<GraphicalObject>();
         this.missiles = new ArrayList<Missile>();
         this.missilesEnemy = new ArrayList<Missile>();
+        this.life = 3;
+        this.level = 1;
 
         // Création des cibles
         this.targets = new ArrayList<Cube>();
         this.initTargets();
 
-        this.angle = 0.0f;
-
-        this.level = 1;
 
         // Commandes aux clavier
         this.addKeyListener(this);
@@ -103,14 +106,25 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         } else {
             for (Cube target : new ArrayList<>(targets)) {
                 if (target.getY() < this.player.getY() + 1) {
-                    int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
-                    if (response == JOptionPane.YES_OPTION) {
-                        // Redémarrage du jeu
+                    // Suppression d'une vie
+                    life--;
+
+                    // Si le joueur n'a plus de vie
+                    if (this.life <= 0) {
+                        int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
+                        if (response == JOptionPane.YES_OPTION) {
+                            // Redémarrage du jeu
+                            restartGame = true;
+                            break;
+                        } else {
+                            // Fermeture du jeu
+                            System.exit(0);
+                        }
+                    } else {
+                        // On affiche le nombre de vie restante et on redémarre le jeu
+                        JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste" + this.life + "!", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
                         restartGame = true;
                         break;
-                    } else {
-                        // Fermeture du jeu
-                        System.exit(0);
                     }
                 } else {
                     if (!isPaused) {
@@ -194,14 +208,25 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             boolean hit = false;
 
             if (shot.intersects(this.player) && shot.getY() > this.player.getY()) {
-                int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
-                if (response == JOptionPane.YES_OPTION) {
-                    // Redémarrage du jeu
+                // Suppression d'une vie
+                life--;
+
+                // Si le joueur n'a plus de vie
+                if (this.life <= 0) {
+                    int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
+                    if (response == JOptionPane.YES_OPTION) {
+                        // Redémarrage du jeu
+                        restartGame = true;
+                        break;
+                    } else {
+                        // Fermeture du jeu
+                        System.exit(0);
+                    }
+                } else {
+                    // On affiche le nombre de vie restante et on redémarre le jeu
+                    JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste " + this.life + " !", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
                     restartGame = true;
                     break;
-                } else {
-                    // Fermeture du jeu
-                    System.exit(0);
                 }
                 break;
             }
