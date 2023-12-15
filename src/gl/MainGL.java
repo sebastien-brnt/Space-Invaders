@@ -14,8 +14,8 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import gl.graphicObjects.Cube;
-import gl.graphicObjects.GraphicalObject;
 import gl.graphicObjects.Missile;
 import gl.graphicObjects.Player;
 
@@ -27,8 +27,9 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     // Joueur
     private Player player;
     private int life;
-
     private float level;
+    private TextRenderer lifeText;
+
 
     // Cibles et missiles
     private ArrayList<Cube> targets;
@@ -245,6 +246,9 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         if (restartGame) {
             restartGame();
         }
+
+        // Mise à jour de la vie du joueur
+        displayPlayerLife(drawable);
     }
 
     private void restartGame() {
@@ -273,6 +277,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
         this.player = new Player(0, 0, 0, 0, 0, 0, 1, 1, 1, 1f, 1, 1, 1);
+        lifeText = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
     }
 
     public void initTargets() {
@@ -357,5 +362,12 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 
     public void setFrame(JFrame frame) {
         this.frame = frame;
+    }
+
+    private void displayPlayerLife(GLAutoDrawable drawable) {
+        lifeText.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+        lifeText.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        lifeText.draw("Vie: " + life, 50, drawable.getSurfaceHeight() - 100);
+        lifeText.endRendering();
     }
 }
