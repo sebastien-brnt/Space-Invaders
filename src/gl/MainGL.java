@@ -30,6 +30,8 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     private float level;
     private int score;
     private TextRenderer lifeText;
+    private ArrayList<Player> lifesRepresentation;
+
     private TextRenderer scoreText;
 
 
@@ -37,6 +39,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     private ArrayList<Cube> targets;
     private ArrayList<Missile> missiles;
     private ArrayList<Missile> missilesEnemy;
+
 
     // Variables pour le delais entre les tirs
     private long lastShotTime, lastShotTimeEnemy = 0;
@@ -66,6 +69,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.addGLEventListener(this);
         this.missiles = new ArrayList<Missile>();
         this.missilesEnemy = new ArrayList<Missile>();
+        this.lifesRepresentation = new ArrayList<Player>();
         this.life = 3;
         this.level = 1;
         this.score = 0;
@@ -255,6 +259,13 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         // Mise à jour de la vie du joueur
         displayPlayerLife(drawable);
         displayPlayerScore(drawable);
+
+
+        for (Player lifeR : new ArrayList<>(lifesRepresentation)) {
+            gl.glPushMatrix();
+            lifeR.display(gl);
+            gl.glPopMatrix();
+        }
     }
 
     private void restartGame() {
@@ -383,7 +394,17 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     private void displayPlayerLife(GLAutoDrawable drawable) {
         lifeText.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
         lifeText.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        lifeText.draw("Vie : " + life, 50, drawable.getSurfaceHeight() - 100);
+        lifeText.draw("Vie : ", 50, drawable.getSurfaceHeight() - 100);
+
+        if (lifesRepresentation.size() != this.life) {
+            lifesRepresentation.clear();
+
+            for (int i = 0; i < this.life; i++) {
+                Player miniPlayer = new Player(-6.5f + (i / 1.8f), 5.1f, -15, 0, 0, 0, 1, 1, 1, .3f, 1, 1, 1);
+                this.lifesRepresentation.add(miniPlayer);
+            }
+        }
+
         lifeText.endRendering();
     }
 
