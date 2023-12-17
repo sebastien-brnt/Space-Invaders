@@ -55,7 +55,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         GLCanvas canvas = new MainGL();
         canvas.setPreferredSize(new Dimension(800, 600));
         frame.getContentPane().add(canvas);
-        frame.setTitle("Space Invaders");
+        frame.setTitle("Space Invaders by Sébastien B.");
         frame.pack();
         frame.setVisible(true);
         Animator animator = new Animator(canvas);
