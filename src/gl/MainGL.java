@@ -28,7 +28,9 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     private Player player;
     private int life;
     private float level;
+    private int score;
     private TextRenderer lifeText;
+    private TextRenderer scoreText;
 
 
     // Cibles et missiles
@@ -66,6 +68,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.missilesEnemy = new ArrayList<Missile>();
         this.life = 3;
         this.level = 1;
+        this.score = 0;
 
         // Création des cibles
         this.targets = new ArrayList<Cube>();
@@ -124,7 +127,8 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                     } else {
                         // On affiche le nombre de vie restante et on redémarre le jeu
                         JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste" + this.life + "!", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
-                        restartGame = true;
+                        this.newLife();
+                        this.initTargets();
                         break;
                     }
                 } else {
@@ -186,6 +190,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 if (shot.intersects(target)) {
                     targetIterator.remove();
                     hit = true;
+                    this.score += 10;
                     break;
                 }
             }
@@ -226,7 +231,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 } else {
                     // On affiche le nombre de vie restante et on redémarre le jeu
                     JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste " + this.life + " !", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
-                    restartGame = true;
+                    this.newLife();
                     break;
                 }
                 break;
@@ -249,6 +254,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 
         // Mise à jour de la vie du joueur
         displayPlayerLife(drawable);
+        displayPlayerScore(drawable);
     }
 
     private void restartGame() {
@@ -258,6 +264,15 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.missiles.clear();
         this.missilesEnemy.clear();
         this.level = 0;
+        this.life = 3;
+        this.score = 3;
+    }
+
+    private void newLife() {
+        // Remise à zero des cibles
+        this.player.setX(0);
+        this.missiles.clear();
+        this.missilesEnemy.clear();
     }
 
 
@@ -278,6 +293,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 
         this.player = new Player(0, 0, 0, 0, 0, 0, 1, 1, 1, 1f, 1, 1, 1);
         lifeText = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
+        scoreText = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
     }
 
     public void initTargets() {
@@ -367,7 +383,15 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
     private void displayPlayerLife(GLAutoDrawable drawable) {
         lifeText.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
         lifeText.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        lifeText.draw("Vie: " + life, 50, drawable.getSurfaceHeight() - 100);
+        lifeText.draw("Vie : " + life, 50, drawable.getSurfaceHeight() - 100);
         lifeText.endRendering();
+    }
+
+
+    private void displayPlayerScore(GLAutoDrawable drawable) {
+        scoreText.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+        scoreText.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        scoreText.draw("Score : " + score, drawable.getSurfaceWidth() - 250, drawable.getSurfaceHeight() - 100);
+        scoreText.endRendering();
     }
 }
