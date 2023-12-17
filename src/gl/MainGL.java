@@ -102,7 +102,6 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 
         // Vitesse de déplacement des cibles
         float vitesse = level / 2500;
-        boolean restartGame = false;
 
         if (targets.isEmpty()) {
             // Ajout d'un niveau et initialisation des cibles
@@ -114,27 +113,8 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         } else {
             for (Cube target : new ArrayList<>(targets)) {
                 if (target.getY() < this.player.getY() + 1) {
-                    // Suppression d'une vie
-                    life--;
-
-                    // Si le joueur n'a plus de vie
-                    if (this.life <= 0) {
-                        int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
-                        if (response == JOptionPane.YES_OPTION) {
-                            // Redémarrage du jeu
-                            restartGame = true;
-                            break;
-                        } else {
-                            // Fermeture du jeu
-                            System.exit(0);
-                        }
-                    } else {
-                        // On affiche le nombre de vie restante et on redémarre le jeu
-                        JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste" + this.life + "!", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
-                        this.newLife();
-                        this.initTargets();
-                        break;
-                    }
+                    removeLife();
+                    break;
                 } else {
                     if (!isPaused) {
                         // Switch de droite à gauche suivant la valeur de Y
@@ -218,26 +198,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             boolean hit = false;
 
             if (shot.intersects(this.player) && shot.getY() > this.player.getY()) {
-                // Suppression d'une vie
-                life--;
-
-                // Si le joueur n'a plus de vie
-                if (this.life <= 0) {
-                    int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
-                    if (response == JOptionPane.YES_OPTION) {
-                        // Redémarrage du jeu
-                        restartGame = true;
-                        break;
-                    } else {
-                        // Fermeture du jeu
-                        System.exit(0);
-                    }
-                } else {
-                    // On affiche le nombre de vie restante et on redémarre le jeu
-                    JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste " + this.life + " !", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
-                    this.newLife();
-                    break;
-                }
+                removeLife();
                 break;
             }
 
@@ -249,11 +210,6 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 shot.display(gl);
                 gl.glPopMatrix();
             }
-        }
-
-        // Redémarrage du jeu
-        if (restartGame) {
-            restartGame();
         }
 
         // Mise à jour de la vie du joueur
@@ -284,6 +240,34 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.player.setX(0);
         this.missiles.clear();
         this.missilesEnemy.clear();
+    }
+
+    private void removeLife() {
+        boolean restartGame = false;
+
+        // Suppression d'une vie
+        life--;
+
+        // Si le joueur n'a plus de vie
+        if (this.life <= 0) {
+            int response = JOptionPane.showConfirmDialog(frame, "Vous êtes mort, voulez-vous recommencer ?", "Vous êtes mort", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                // Redémarrage du jeu
+                restartGame = true;
+            } else {
+                // Fermeture du jeu
+                System.exit(0);
+            }
+        } else {
+            // On affiche le nombre de vie restante et on redémarre le jeu
+            JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste" + this.life + "!", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
+            this.newLife();
+            this.initTargets();
+        }
+
+        if (restartGame) {
+            restartGame();
+        }
     }
 
 
