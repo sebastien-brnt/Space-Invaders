@@ -84,6 +84,12 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.setFocusable(true);
     }
 
+    // Définition de la fenêtre
+    public void setFrame(JFrame frame) {
+        this.frame = frame;
+    }
+
+    // Affichage
     @Override
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
@@ -111,6 +117,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
                 JOptionPane.showMessageDialog(frame, "Félécitation, vous passez au niveau " + (int) this.level + "!", "Niveau " + (int) this.level, JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
+            // Affichage des cibles
             for (Cube target : new ArrayList<>(targets)) {
                 if (target.getY() < this.player.getY() + 1) {
                     removeLife();
@@ -160,6 +167,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             }
         }
 
+        // Missile du joueur
         Iterator<Missile> shotIterator = missiles.iterator();
         while (shotIterator.hasNext()) {
             Missile shot = shotIterator.next();
@@ -189,6 +197,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             }
         }
 
+        // Missile des ennemis
         Iterator<Missile> shotIteratorEnemy = missilesEnemy.iterator();
         while (shotIteratorEnemy.hasNext()) {
             Missile shot = shotIteratorEnemy.next();
@@ -216,7 +225,6 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         displayPlayerLife(drawable);
         displayPlayerScore(drawable);
 
-
         for (Player lifeR : new ArrayList<>(lifesRepresentation)) {
             gl.glPushMatrix();
             lifeR.display(gl);
@@ -224,6 +232,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         }
     }
 
+    // Redémarrage du jeu
     private void restartGame() {
         // Remise à zero des cibles, du joueur et du niveau
         this.player.setX(0);
@@ -235,6 +244,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.score = 0;
     }
 
+    // Lorsque le joueur perd une vie
     private void newLife() {
         // Remise à zero des cibles
         this.player.setX(0);
@@ -242,6 +252,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.missilesEnemy.clear();
     }
 
+    // Gestion des suppression de vie
     private void removeLife() {
         boolean restartGame = false;
 
@@ -273,24 +284,22 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 
     @Override
     public void dispose(GLAutoDrawable arg0) {
-        // TODO Auto-generated method stub
     }
 
+    // Initalisation de la fenêtre
     @Override
     public void init(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
-        // Color background
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         gl.glClearDepth(1.0f);
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glDepthFunc(GL2.GL_LEQUAL);
         gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
-        this.player = new Player(0, 0, 0, 0, 0, 0, 1, 1, 1, 1f, 1, 1, 1);
-        lifeText = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
-        scoreText = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
+        this.initPlayer();
     }
 
+    // Initalisation des cibles
     public void initTargets() {
         this.targets.clear();
         this.missiles.clear();
@@ -306,10 +315,15 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         }
     }
 
+    // Initialisation du joueur
+    public void initPlayer() {
+        this.player = new Player(0, 0, 0, 0, 0, 0, 1, 1, 1, 1f, 1, 1, 1);
+        lifeText = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
+        scoreText = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
+    }
+
     @Override
-    public void reshape(GLAutoDrawable drawable,
-                        int x, int y, int width, int height) {
-        // TODO Auto-generated method stub
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GL2 gl = drawable.getGL().getGL2();
         // Set the view area
         gl.glViewport(0, 0, width, height);
@@ -317,13 +331,40 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         GLU glu = new GLU();
-        glu.gluPerspective(45.0, (float)width/height,
-                0.1, 100.0);
+        glu.gluPerspective(45.0, (float)width/height, 0.1, 100.0);
         // Enable the model view
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
     }
 
+    //// Affichage des informations du joueur ////
+    // Affichage des vies du joueur
+    private void displayPlayerLife(GLAutoDrawable drawable) {
+        lifeText.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+        lifeText.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        lifeText.draw("Vie : ", 50, drawable.getSurfaceHeight() - 100);
+
+        if (lifesRepresentation.size() != this.life) {
+            lifesRepresentation.clear();
+
+            for (int i = 0; i < this.life; i++) {
+                Player miniPlayer = new Player(-6.5f + (i / 1.8f), 5.1f, -15, 0, 0, 0, 1, 1, 1, .3f, 1, 1, 1);
+                this.lifesRepresentation.add(miniPlayer);
+            }
+        }
+
+        lifeText.endRendering();
+    }
+
+    // Affichage du score du joueur
+    private void displayPlayerScore(GLAutoDrawable drawable) {
+        scoreText.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+        scoreText.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        scoreText.draw("Score : " + score, drawable.getSurfaceWidth() - 250, drawable.getSurfaceHeight() - 100);
+        scoreText.endRendering();
+    }
+
+    //// Gestion des évènement au clavier ////
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -369,34 +410,5 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
 
     @Override
     public void keyTyped(KeyEvent e) {
-    }
-
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
-    }
-
-    private void displayPlayerLife(GLAutoDrawable drawable) {
-        lifeText.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
-        lifeText.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        lifeText.draw("Vie : ", 50, drawable.getSurfaceHeight() - 100);
-
-        if (lifesRepresentation.size() != this.life) {
-            lifesRepresentation.clear();
-
-            for (int i = 0; i < this.life; i++) {
-                Player miniPlayer = new Player(-6.5f + (i / 1.8f), 5.1f, -15, 0, 0, 0, 1, 1, 1, .3f, 1, 1, 1);
-                this.lifesRepresentation.add(miniPlayer);
-            }
-        }
-
-        lifeText.endRendering();
-    }
-
-
-    private void displayPlayerScore(GLAutoDrawable drawable) {
-        scoreText.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
-        scoreText.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        scoreText.draw("Score : " + score, drawable.getSurfaceWidth() - 250, drawable.getSurfaceHeight() - 100);
-        scoreText.endRendering();
     }
 }
