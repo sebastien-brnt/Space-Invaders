@@ -232,7 +232,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
         this.missilesEnemy.clear();
         this.level = 0;
         this.life = 3;
-        this.score = 3;
+        this.score = 0;
     }
 
     private void newLife() {
@@ -260,7 +260,7 @@ public class MainGL extends GLCanvas implements GLEventListener, KeyListener
             }
         } else {
             // On affiche le nombre de vie restante et on redémarre le jeu
-            JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste" + this.life + "!", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Vous avez perdu une vie, il vous en reste " + this.life + " !", "Vie du joueur", JOptionPane.INFORMATION_MESSAGE);
             this.newLife();
             this.initTargets();
         }
